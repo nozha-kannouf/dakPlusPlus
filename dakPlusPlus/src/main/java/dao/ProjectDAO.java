@@ -54,7 +54,28 @@ public class ProjectDAO {
 
 		return result = parseProjects(rs);
 	}
+	public boolean projectIdExists(int id){
+		boolean exist = false;
+		Connection conn;
+		try {
+			conn = ConnectionFactory.getConnection();
+			List<Project> result = null;
+			PreparedStatement statement = conn
+					.prepareStatement("SELECT * FROM project WHERE projectId = ?");
+			statement.setInt(1, id);
+			ResultSet rs = statement.executeQuery();
 
+			result = parseProjects(rs);
+			if (result.isEmpty()) {
+				System.out.println("No such projectId");
+				exist = false;
+			} else
+				exist = true;
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return exist;
+	}
 	private List<Project> parseProjects(ResultSet rs) throws SQLException {
 		List<Project> result = new ArrayList<>();
 		while (rs.next()) {

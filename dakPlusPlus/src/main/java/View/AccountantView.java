@@ -49,7 +49,7 @@ public class AccountantView {
 		System.out.println("Phone : ");
 		employee.setPhone(Validators.requestPhoneInput());
 		System.out.println("Phone in case of emergency : ");
-		employee.setPhone(Validators.requestPhoneInput());
+		employee.setPhoneIce(Validators.requestPhoneInput());
 		System.out.println("Date of birth : ");
 		employee.setDateOfBirth(Validators.requestAdultInput());
 		System.out.println("Salary : ");

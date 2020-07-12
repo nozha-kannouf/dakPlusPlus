@@ -3,6 +3,7 @@ package View;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.InputMismatchException;
+import java.util.Locale;
 import java.util.Scanner;
 import java.util.regex.Pattern;
 
@@ -14,11 +15,12 @@ public class Validators {
 			System.out.println("Enter a text hier: ");
 			input = scanner.nextLine();
 			if (input.isEmpty() || input.isBlank())
-				input= "No text entered";
+				input = "No text entered";
 		} while (input.isEmpty() || input.isBlank());
 
 		return input;
 	}
+
 	protected static int requestIntInput(int lower, int upper) {
 		Scanner scanner = new Scanner(System.in);
 		int input = -1;
@@ -104,12 +106,13 @@ public class Validators {
 		do {
 			System.out.println("Enter a date of birth hier: (dd/mm/yyyy) ");
 			input = scanner.nextLine();
-			match = Pattern.matches("(0?[1-9]|[12][0-9]|3[01])/(0?[1-9]|1[012])/((19|20)\\\\d\\\\d)", input);
+			match = Pattern.matches("(0?[1-9]|[12][0-9]|3[01])/(0?[1-9]|1[012])/((19|20)\\d\\d)", input);
 			if (!match) {
 				System.out.println("That's not a valid date!");
 
 			} else {
-				DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+				DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+
 				dateOfBirth = LocalDate.parse(input, formatter);
 				LocalDate now = LocalDate.now();
 				long years = java.time.temporal.ChronoUnit.YEARS.between(dateOfBirth, now);
@@ -120,7 +123,6 @@ public class Validators {
 			}
 		} while (!match);
 		return dateOfBirth;
-
 	}
 
 	protected static LocalDate requestDateInput() {
@@ -163,7 +165,7 @@ public class Validators {
 		} while (!match);
 		return startDate;
 	}
-	
+
 	protected static LocalDate requestEndDateNotInThePastInput(LocalDate startDate) {
 		Scanner scanner = new Scanner(System.in);
 		String input = null;

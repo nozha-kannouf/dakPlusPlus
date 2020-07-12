@@ -8,11 +8,39 @@ import java.sql.Statement;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
-import model.Employee;
 import model.WorkDone;
 
 public class WorkDoneDAO {
+
+	public Optional<WorkDone> getRecord(WorkDone workDone) {
+		Optional<WorkDone> result = null;
+		Connection conn;
+		try {
+			conn = ConnectionFactory.getConnection();
+			System.out.println("before select query");
+			System.out.println(workDone);
+			PreparedStatement statement = conn
+					.prepareStatement("SELECT * FROM workdone  WHERE employeeId = ? AND projectId = ? AND dateOfWork = ?");//
+			statement.setInt(1, workDone.getEmployeeId());
+			statement.setInt(2, workDone.getProjectId());
+			statement.setDate(3, java.sql.Date.valueOf(workDone.getDateOfWork()));
+			ResultSet rs = statement.executeQuery();
+			System.out.println("after select query");
+			List<WorkDone> workdones = parseWorkDone(rs);
+			if (workdones.size() == 0)
+				result = Optional.empty();
+			if (workdones.size() == 1)
+				result = Optional.of(workdones.get(0));
+
+		} catch (SQLException e) {
+			System.out.println("Problem with the DB!!!!!");
+			e.printStackTrace();
+		}
+		return result;
+	}
+
 	public List<WorkDone> getRecords() throws SQLException {
 		Connection conn = ConnectionFactory.getConnection();
 
@@ -26,6 +54,7 @@ public class WorkDoneDAO {
 		Connection conn;
 		try {
 			conn = ConnectionFactory.getConnection();
+			System.out.println("before insert query");
 			PreparedStatement statement = conn.prepareStatement(
 					"INSERT INTO workdone (employeeId, projectId, dateOfWork, hoursWorked, remarks) VALUES ( ?, ?, ?, ?, ?)");
 			statement.setInt(1, workDone.getEmployeeId());
@@ -33,15 +62,16 @@ public class WorkDoneDAO {
 			statement.setDate(3, java.sql.Date.valueOf(workDone.getDateOfWork()));
 			statement.setInt(4, workDone.getHoursWorked());
 			statement.setString(5, workDone.getRemarks());
-			statement.executeUpdate();
+			if(statement.executeUpdate() == 1) System.out.println("Record added with success");
+			else System.out.println("No record added try again ");
+			
 		} catch (SQLException e) {
-			System.out.println("Problem with the DB ");
+			System.out.println("Problem with the DB addRecord method ");
 			e.printStackTrace();
 		}
 	}
 
 	public void updateRecord(WorkDone workDone) {
-		// hier kan ik beter doen met de exception handeling maar geen tijd
 		Connection conn;
 		try {
 			conn = ConnectionFactory.getConnection();
@@ -53,7 +83,12 @@ public class WorkDoneDAO {
 			statement.setString(3, workDone.getRemarks());
 			statement.setInt(4, workDone.getEmployeeId());
 			statement.setInt(5, workDone.getProjectId());
-			statement.executeUpdate();
+			int recordUpdated = statement.executeUpdate();
+			if(recordUpdated == 0) {
+				System.out.println("No records updated");
+			}else {
+				System.out.println("Record(s) updated with success");
+			}
 		} catch (SQLException e) {
 			System.out.println("Problem with the DB of employeeId and/of projectId don't exist in the DB");
 			e.printStackTrace();
@@ -66,12 +101,12 @@ public class WorkDoneDAO {
 		try {
 			conn = ConnectionFactory.getConnection();
 			PreparedStatement statement = conn
-					.prepareStatement("DELETE FROM workdone WHERE employeeId = ? AND projectId = ?");
+					.prepareStatement("DELETE FROM workdone WHERE employeeId = ? AND projectId = ? AND dateOfWork = ?");
 			statement.setInt(1, workDone.getEmployeeId());
 			statement.setInt(2, workDone.getProjectId());
+			statement.setDate(3, java.sql.Date.valueOf(workDone.getDateOfWork()));
 			statement.executeUpdate();
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
