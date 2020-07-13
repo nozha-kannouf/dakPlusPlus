@@ -14,33 +14,6 @@ import model.WorkDone;
 
 public class WorkDoneDAO {
 
-	public double calculateProfitability(int projectId) {
-
-		double result = 0;
-		Connection conn;
-		try {
-			conn = ConnectionFactory.getConnection();
-			PreparedStatement statement = conn
-					.prepareStatement(
-							"select workdone.employeeId , hoursworked, price, endDate" 
-							+"from workdone"
-							+"inner JOIN employee on employee.employeeId = workdone.employeeId"
-							+"inner JOIN project on project.projectId = ?"
-							+"where endDate <= ?"
-							);
-			statement.setInt(1, projectId);
-			statement.setDate(3, java.sql.Date.valueOf(LocalDate.now()));
-			ResultSet rs = statement.executeQuery();
-			
-
-		} catch (SQLException e) {
-			System.out.println("Problem with the DB!!!!!");
-			e.printStackTrace();
-		}
-		return result;
-		
-		
-	}
 	public Optional<WorkDone> getRecord(WorkDone workDone) {
 		Optional<WorkDone> result = null;
 		Connection conn;
