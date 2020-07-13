@@ -38,5 +38,13 @@ public class EmployeeService {
 	public List<Employee> getEmployesBornThisWeek() throws SQLException {
 		return employeeDAO.getEmployesBornThisWeek();
 	}
+	
+	public double hourlyWage(int  employeeId) {
+		if (employeeDAO.getEmployee(employeeId).isPresent()) {
+			Employee employee = employeeDAO.getEmployee(employeeId).get();
+			return employee.getSalary()/(22*8);	
+		}else return 0;
+		
+	}
 
 }

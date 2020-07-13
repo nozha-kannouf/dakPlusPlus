@@ -6,9 +6,9 @@ import service.WorkDoneService;
 import service.ProjectService;;
 
 public class Main {
-	
+
 	public static void main(String[] args) throws SQLException {
-		
+
 		int mainChoice;
 		int subChoice = -1;
 
@@ -27,7 +27,7 @@ public class Main {
 	private static void handleUserChoice(int mainChoice, int subChoice) throws SQLException {
 		EmployeeService employeeService = new EmployeeService();
 		WorkDoneService workDoneService = new WorkDoneService();
-		ProjectService  projectService = new ProjectService();
+		ProjectService projectService = new ProjectService();
 		if (mainChoice == 1) {
 			AccountantView accountantView = new AccountantView();
 
@@ -100,9 +100,10 @@ public class Main {
 			if (subChoice == 4) {
 				managementView.deleteRecord(workDoneService);
 			}
-
+			if (subChoice == 5) {
+				managementView.profitability(workDoneService);
+			}
 		}
-
 	}
 
 	private static void showMenu() {
@@ -143,6 +144,7 @@ public class Main {
 			System.out.println("2. Create workDone record");
 			System.out.println("3. Update workDone record");
 			System.out.println("4. Delete workDone record");
+			System.out.println("5. Calculate the profitability of a project");
 		}
 	}
 

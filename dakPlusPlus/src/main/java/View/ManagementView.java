@@ -7,6 +7,7 @@ import model.WorkDone;
 import service.WorkDoneService;;
 
 public class ManagementView {
+
 	protected void displayRecords(WorkDoneService workDoneService) {
 		List<WorkDone> workDones = null;
 		try {
@@ -18,10 +19,6 @@ public class ManagementView {
 	}
 
 	protected void addRecord(WorkDoneService workDoneService) {
-		// Ik kan beter doen met deze function, als projectId, employeeId and
-		// dateOfWorks zijn al in de DB
-		// add nieuw hours to old hours
-		// concat old remarks met nieuw remarks
 		WorkDone workDone = new WorkDone();
 		System.out.println("employeeId : ");
 		workDone.setEmployeeId(Validators.requestIntInput(0, Integer.MAX_VALUE));
@@ -30,7 +27,7 @@ public class ManagementView {
 		System.out.println("Date of work : ");
 		workDone.setDateOfWork(Validators.requestDateInput());
 		System.out.println("Number of hours worked ");
-		workDone.setHoursWorked(Validators.requestIntInput(0, 10));
+		workDone.setHoursWorked(Validators.requestIntInput(0, 8));
 		System.out.println("Remarks : ");
 		workDone.setRemarks(Validators.requestOptionalStringInput());
 		workDoneService.addRecord(workDone);
@@ -45,11 +42,11 @@ public class ManagementView {
 		System.out.println("Date of work : ");
 		workDone.setDateOfWork(Validators.requestDateInput());
 		System.out.println("Number of hours worked ");
-		workDone.setHoursWorked(Validators.requestIntInput(0, 10));
+		workDone.setHoursWorked(Validators.requestIntInput(0, 8));
 		System.out.println("Remarks : ");
 		workDone.setRemarks(Validators.requestOptionalStringInput());
 		workDoneService.updateRecord(workDone);
-		
+
 	}
 
 	protected void deleteRecord(WorkDoneService workDoneService) {
@@ -61,6 +58,12 @@ public class ManagementView {
 		System.out.println("Please enter date of work : ");
 		workDone.setDateOfWork(Validators.requestDateInput());
 		workDoneService.deleteRecord(workDone);
+	}
+
+	protected void profitability(WorkDoneService workDoneService) {
+		System.out.println("Please enter projectId : ");
+		String result = workDoneService.profitability(Validators.requestIntInput(1, Integer.MAX_VALUE));
+		System.out.println(result);
 	}
 
 }

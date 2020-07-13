@@ -8,30 +8,60 @@ import java.sql.Statement;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import model.Employee;
 
+
 public class EmployeeDAO {
-	public boolean employeeIdExists(int id){
-		boolean exist = false;
+	public Optional<Employee> getEmployee(int employeeId) {
+		Optional<Employee> result = null;
 		Connection conn;
 		try {
 			conn = ConnectionFactory.getConnection();
-			List<Employee> result = null;
 			PreparedStatement statement = conn
-					.prepareStatement("SELECT * FROM employee WHERE employeeId = ?");
-			statement.setInt(1, id);
+					.prepareStatement("SELECT * FROM employee WHERE employeeId = ? ");//
+			statement.setInt(1, employeeId);
 			ResultSet rs = statement.executeQuery();
+			List<Employee> employees = parseEmployees(rs);
+			if (employees.size() == 0)
+				result = Optional.empty();
+			if (employees.size() == 1)
+				result = Optional.of(employees.get(0));
 
-			result = parseEmployees(rs);
-			if (result.isEmpty()) {
-				System.out.println("No such employeeId");
-				exist = false;
-			} else
-				exist = true;
 		} catch (SQLException e) {
+			System.out.println("Problem with the DB!!!!!");
 			e.printStackTrace();
 		}
+		return result;
+	}
+	public boolean employeeIdExists(int id){
+		boolean exist = false;
+		if(getEmployee(id)== null) {
+			System.out.println("No such employeeId");
+			exist = false;
+		}else {
+			exist = true;
+		}
+		
+//		Connection conn;
+//		try {
+//			conn = ConnectionFactory.getConnection();
+//			List<Employee> result = null;
+//			PreparedStatement statement = conn
+//					.prepareStatement("SELECT * FROM employee WHERE employeeId = ?");
+//			statement.setInt(1, id);
+//			ResultSet rs = statement.executeQuery();
+//
+//			result = parseEmployees(rs);
+//			if (result.isEmpty()) {
+//				System.out.println("No such employeeId");
+//				exist = false;
+//			} else
+//				exist = true;
+//		} catch (SQLException e) {
+//			e.printStackTrace();
+//		}
 		return exist;
 	}
 	public List<Employee> getAllEmployees() throws SQLException {

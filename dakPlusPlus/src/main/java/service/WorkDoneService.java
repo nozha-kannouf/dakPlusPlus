@@ -1,14 +1,14 @@
 package service;
 
 import java.sql.SQLException;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
-import dao.EmployeeDAO;
-import dao.ProjectDAO;
-import dao.WorkDoneDAO;
-import model.WorkDone;
+import dao.*;
+import model.*;
 
 public class WorkDoneService {
 	private WorkDoneDAO workDoneDAO  = new WorkDoneDAO();
@@ -29,9 +29,15 @@ public class WorkDoneService {
 		workDoneDAO.addRecord(workDone);
 		}else {
 			int totalHoursWorked = workDone.getHoursWorked()+ oldWorkDone.get().getHoursWorked();
-			String concatRemarks = workDone.getRemarks().concat(oldWorkDone.get().getRemarks());workDone.setHoursWorked(totalHoursWorked);
+			String concatRemarks = workDone.getRemarks().concat(oldWorkDone.get().getRemarks());
+			if(totalHoursWorked<=8) {
+			workDone.setHoursWorked(totalHoursWorked);
 			workDone.setRemarks(concatRemarks);
 			workDoneDAO.updateRecord(workDone);
+			}
+			else {
+				System.out.println("This record can not be added, maximum houres/dag is 8h");
+			}
 		}
 	}
 
@@ -47,5 +53,31 @@ public class WorkDoneService {
 		workDoneDAO.deleteRecord(workDone);
 
 	}
+
+	public String profitability(int projectId) {
+		double result = 0;
+		Project project = new Project();
+		
+		if (projectDAO.getProject(projectId).isPresent()) {
+			project = projectDAO.getProject(projectId).get();
+			if(project.getEndDate().isBefore(LocalDate.now())) {
+				EmployeeService employeeService = new EmployeeService();
+				List<WorkDone> workDones = workDoneDAO.getRecords(projectId);
+				result = workDones.stream()
+								  .mapToDouble(w-> employeeService.hourlyWage(w.getEmployeeId()) * w.getHoursWorked())
+								  .sum();
+			}else {
+				System.out.println("We can not calculate the profitability because the project is not finished");
+				return "";
+			}
+		}else {
+			System.out.println("No such projectId");
+		};
+		NumberFormat formatter = new DecimalFormat("#0.00");     
+		return "The profitability of this project is: "+formatter.format(project.getPrice() - result);
+	}
+
+	
+	 
 	
 }

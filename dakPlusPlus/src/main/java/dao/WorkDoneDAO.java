@@ -14,13 +14,38 @@ import model.WorkDone;
 
 public class WorkDoneDAO {
 
+	public double calculateProfitability(int projectId) {
+
+		double result = 0;
+		Connection conn;
+		try {
+			conn = ConnectionFactory.getConnection();
+			PreparedStatement statement = conn
+					.prepareStatement(
+							"select workdone.employeeId , hoursworked, price, endDate" 
+							+"from workdone"
+							+"inner JOIN employee on employee.employeeId = workdone.employeeId"
+							+"inner JOIN project on project.projectId = ?"
+							+"where endDate <= ?"
+							);
+			statement.setInt(1, projectId);
+			statement.setDate(3, java.sql.Date.valueOf(LocalDate.now()));
+			ResultSet rs = statement.executeQuery();
+			
+
+		} catch (SQLException e) {
+			System.out.println("Problem with the DB!!!!!");
+			e.printStackTrace();
+		}
+		return result;
+		
+		
+	}
 	public Optional<WorkDone> getRecord(WorkDone workDone) {
 		Optional<WorkDone> result = null;
 		Connection conn;
 		try {
 			conn = ConnectionFactory.getConnection();
-			System.out.println("before select query");
-			System.out.println(workDone);
 			PreparedStatement statement = conn
 					.prepareStatement("SELECT * FROM workdone  WHERE employeeId = ? AND projectId = ? AND dateOfWork = ?");//
 			statement.setInt(1, workDone.getEmployeeId());
@@ -40,7 +65,23 @@ public class WorkDoneDAO {
 		}
 		return result;
 	}
-
+	public List<WorkDone> getRecords(int projectId) {
+		List<WorkDone> result = null;
+		Connection conn;
+		try {
+			conn = ConnectionFactory.getConnection();
+			PreparedStatement statement = conn
+					.prepareStatement("SELECT * FROM workdone  WHERE projectId = ? ");
+			statement.setInt(1, projectId);
+			ResultSet rs = statement.executeQuery();
+			result = parseWorkDone(rs);
+			
+		} catch (SQLException e) {
+			System.out.println("Problem with the DB!!!!!");
+			e.printStackTrace();
+		}
+		return result;
+	}
 	public List<WorkDone> getRecords() throws SQLException {
 		Connection conn = ConnectionFactory.getConnection();
 

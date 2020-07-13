@@ -10,9 +10,7 @@ import service.EmployeeService;
 import service.WorkDoneService;
 
 public class SecritariatView {
-	//Check if an employee worked on a specific date
-	//if you want to check if an employee is working today, just write the date of today
-	public void whoWorksWichDay(WorkDoneService workDoneService) {
+	protected void whoWorksWichDay(WorkDoneService workDoneService) {
 		List<WorkDone> workDones = null;
 		System.out.println("Please enter employeeId : ");
 		int employeeId = Validators.requestIntInput(1, Integer.MAX_VALUE);

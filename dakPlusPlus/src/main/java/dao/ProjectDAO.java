@@ -7,6 +7,7 @@ import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import model.Employee;
 import model.Project;
@@ -54,25 +55,34 @@ public class ProjectDAO {
 
 		return result = parseProjects(rs);
 	}
-	public boolean projectIdExists(int id){
-		boolean exist = false;
+	public Optional<Project> getProject(int projectId) {
+		Optional<Project> result = null;
 		Connection conn;
 		try {
 			conn = ConnectionFactory.getConnection();
-			List<Project> result = null;
 			PreparedStatement statement = conn
-					.prepareStatement("SELECT * FROM project WHERE projectId = ?");
-			statement.setInt(1, id);
+					.prepareStatement("SELECT * FROM project WHERE projectId = ? ");//
+			statement.setInt(1, projectId);
 			ResultSet rs = statement.executeQuery();
+			List<Project> projects = parseProjects(rs);
+			if (projects.size() == 0)
+				result = Optional.empty();
+			if (projects.size() == 1)
+				result = Optional.of(projects.get(0));
 
-			result = parseProjects(rs);
-			if (result.isEmpty()) {
-				System.out.println("No such projectId");
-				exist = false;
-			} else
-				exist = true;
 		} catch (SQLException e) {
+			System.out.println("Problem with the DB!!!!!");
 			e.printStackTrace();
+		}
+		return result;
+	}
+	public boolean projectIdExists(int id){
+		boolean exist = false;
+		if(getProject(id)== null) {
+			System.out.println("No such projectId");
+			exist = false;
+		}else {
+			exist = true;
 		}
 		return exist;
 	}

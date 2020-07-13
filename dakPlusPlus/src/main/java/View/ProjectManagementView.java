@@ -52,7 +52,7 @@ public class ProjectManagementView {
 		}
 		
 	}
-	public void getProjectsStartingToday(ProjectService projectService) {
+	protected void getProjectsStartingToday(ProjectService projectService) {
 		try {
 			List<Project> projects = projectService.getProjectsStartingToday();
 			if(projects.isEmpty()) {
