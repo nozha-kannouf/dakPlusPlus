@@ -8,8 +8,6 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-
-import model.Employee;
 import model.Project;
 
 public class ProjectDAO {

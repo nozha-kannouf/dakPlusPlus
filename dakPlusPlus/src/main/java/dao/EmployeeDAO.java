@@ -9,7 +9,6 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-
 import model.Employee;
 
 
@@ -43,25 +42,6 @@ public class EmployeeDAO {
 		}else {
 			exist = true;
 		}
-		
-//		Connection conn;
-//		try {
-//			conn = ConnectionFactory.getConnection();
-//			List<Employee> result = null;
-//			PreparedStatement statement = conn
-//					.prepareStatement("SELECT * FROM employee WHERE employeeId = ?");
-//			statement.setInt(1, id);
-//			ResultSet rs = statement.executeQuery();
-//
-//			result = parseEmployees(rs);
-//			if (result.isEmpty()) {
-//				System.out.println("No such employeeId");
-//				exist = false;
-//			} else
-//				exist = true;
-//		} catch (SQLException e) {
-//			e.printStackTrace();
-//		}
 		return exist;
 	}
 	public List<Employee> getAllEmployees() throws SQLException {
